@@ -150,6 +150,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
  
 }
+// MARK: - After going back to DetailsVController updating the table and FavAray in VModel with using protocol
 extension ViewController:GoingBackFromDetail{
     func UpdateTable() {
         self.VModel.FavArray.removeAll()

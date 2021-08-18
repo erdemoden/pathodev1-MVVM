@@ -1,8 +1,14 @@
 //
-//  FavModel.swift
-//  pathodev1-mvvm
+//  favmodel.swift
+//  pathodev1
 //
-//  Created by erdem öden on 14.08.2021.
+//  Created by erdem öden on 2.08.2021.
 //
 
 import Foundation
+
+struct Favourites:Equatable{
+
+    var Character:String? = nil
+}
+

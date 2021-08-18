@@ -14,8 +14,17 @@ class VControllerVModel{
 var HarryArray = [HarryMod]()
 var FavArray = [Favourites]()
 
+ // MARK: - Other Variables
+    let AppDelegate:AppDelegate!
+    let Context:NSManagedObjectContext!
     
-    //Functions For ViewController Class
+    //MARK: - init()
+    init() {
+        self.AppDelegate = UIApplication.shared.delegate as? AppDelegate
+        self.Context = self.AppDelegate.persistentContainer.viewContext
+    }
+    
+    //DESCRIPTION: - Functions For ViewController Class
     // MARK: - Function for updating table when app is opening
     func ApiCall(completed: @escaping ()->()){
     let Url = URL(string: "http://hp-api.herokuapp.com/api/characters")!
@@ -29,12 +38,10 @@ var FavArray = [Favourites]()
                 do{
                     self.HarryArray = try JSONDecoder().decode([HarryMod].self, from: Data!)
                     DispatchQueue.main.async { [self] in
-                        let AppDelegate = UIApplication.shared.delegate as! AppDelegate
-                        let Context = AppDelegate.persistentContainer.viewContext
                         let Fetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Favs")
                         Fetch.returnsObjectsAsFaults = false
                         do{
-                           let Results = try Context.fetch(Fetch)
+                            let Results = try self.Context.fetch(Fetch)
                             for Result in Results as![NSManagedObject]{
                                 if(Result.value(forKey: "image") != nil){
                                     let Forward = Favourites(Character: (Result.value(forKey: "image") as! String))
@@ -59,10 +66,7 @@ var FavArray = [Favourites]()
 }
     
 // MARK: - Clicked Function for heart button on the cell
-    
     func Clicked(Index:Int = -1,Character:String = ""){
-        let AppDelegate = UIApplication.shared.delegate as! AppDelegate
-        let Context = AppDelegate.persistentContainer.viewContext
         let Entity = NSEntityDescription.insertNewObject(forEntityName: "Favs", into: Context);
         
         if(Index != -1){
@@ -99,39 +103,5 @@ var FavArray = [Favourites]()
             }
         }
     }
-    
-  
-    // Functions For DetailsVController Class
-    // MARK: - Result function for determine the heartbut image in detailsvcontroller when clicked the button
-    func Result() -> Int{
-        let AppDelegate = UIApplication.shared.delegate as! AppDelegate
-        let Context = AppDelegate.persistentContainer.viewContext
-        let Entity = NSEntityDescription.insertNewObject(forEntityName: "Favs", into: Context)
-        let Fetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Favs")
-        do{
-        let Results = try Context.fetch(Fetch)
-            if(Results.count > 0){
-               
-        
-            for Result in Results as! [NSManagedObject]{
-                Context.delete(Result)
-            }
-                do{
-                    try Context.save()
-                }
-                catch{
-                    print("error")
-                }
-                return Results.count
-            }
-    }
-        catch{
-            print("error")
-        }
-        return 5
-    }
-    
-    
-    
 }
 
