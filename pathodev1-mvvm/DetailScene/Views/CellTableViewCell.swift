@@ -20,10 +20,10 @@ class CellTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
     
@@ -33,8 +33,8 @@ class CellTableViewCell: UITableViewCell {
         CharacterImage.layer.cornerRadius = 20
         CharacterImage.layer.borderColor = UIColor.black.cgColor
         CharacterImage.layer.borderWidth = 5
-            CharacterImage.layer.backgroundColor = UIColor.black.cgColor
+        CharacterImage.layer.backgroundColor = UIColor.black.cgColor
         CharacterImage.clipsToBounds = true
     }
-
+    
 }

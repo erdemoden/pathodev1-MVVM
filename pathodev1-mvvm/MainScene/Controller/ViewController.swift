@@ -16,16 +16,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     // MARK: - DidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
+        VModel.Proto = self
         if(self.TableView != nil){
-        VModel.ApiCall { [self] in
-            self.TableView.reloadData()
-        }
+            VModel.ApiCall()
         }
         
         //NavigationBar Title
         if let navigationBar = self.navigationController?.navigationBar {
             let firstFrame = CGRect(x: navigationBar.frame.width/2-120, y: navigationBar.frame.height/2-15, width: 240, height: 30)
-
+            
             let firstLabel = UILabel(frame: firstFrame)
             firstLabel.text = "HARRY POTTER"
             firstLabel.font = UIFont.systemFont(ofSize:30,weight: .black)
@@ -34,7 +33,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         
         
-        }
+    }
     // MARK: - TableView Functions
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         VModel.HarryArray.count
@@ -49,7 +48,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             Cell?.DateOfBirth.text = VModel.HarryArray[indexPath.row].dateOfBirth
             Cell?.ActorName.text = VModel.HarryArray[indexPath.row].actor
             Cell?.HeartBut.Character = VModel.HarryArray[indexPath.row].name
-
+            
             let Sender = Favourites(Character: Cell?.HeartBut.Character)
             if VModel.FavArray.contains(Sender){
                 Cell?.HeartBut.setImage(UIImage(named: "heart-red"), for: .normal)
@@ -57,39 +56,22 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             else{
                 Cell?.HeartBut.setImage(UIImage(named: "heart-empty"), for: .normal)
             }
-
-
+            
+            
             Cell?.HeartBut.addTarget(self, action: #selector(Clicked), for: .touchUpInside)
         }
         return Cell!
     }
-
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 120
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         Row = indexPath.row
-        let Second = self.storyboard!.instantiateViewController(withIdentifier: "tosecondvc") as! DetailsVController
-
-        Second.Delegate = self
-        Second.Actor = VModel.HarryArray[Row].actor
-        Second.Name = VModel.HarryArray[Row].name
-        Second.Birth = VModel.HarryArray[Row].dateOfBirth
-        Second.ImageName = VModel.HarryArray[Row].image
-        let Favs = Favourites(Character: VModel.HarryArray[Row].name)
-        if(VModel.FavArray.contains(Favs)){
-            Second.Fav = "it is in your favourites"
-            Second.HeartButImageName = "heart-red"
-        }
-        else{
-            Second.Fav = "it is not in your favourites"
-            Second.HeartButImageName = "heart-empty"
-        }
-        self.navigationController?.pushViewController(Second, animated: true)
+        VModel.Coordinator?.startAddEvent(HarryData: VModel.HarryArray[Row], FavArray: VModel.FavArray)
         TableView.deselectRow(at: indexPath, animated: true)
     }
-    
     
     // MARK: - Clicked function for heart buttons in tableview cell
     @objc func Clicked(Sender:SubClassedUIButton){
@@ -99,33 +81,33 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             if(VModel.FavArray.contains(Favs)){
                 VModel.Clicked(Index: Index!,Character: Sender.Character)
                 UIView.animate(withDuration: 0.5, animations: {
-                                    Sender.transform = CGAffineTransform(scaleX: 2, y: 2)
-                                    Sender.setImage(UIImage(named: "heart-empty"), for: .normal)
-                                }, completion: {
-                                    done in
-                                    if done {
-                                        UIView.animate(withDuration: 0.5, animations: {
-                                            Sender.transform = CGAffineTransform.identity
-                                        })
-                    
-                                    }
-                                })
+                    Sender.transform = CGAffineTransform(scaleX: 2, y: 2)
+                    Sender.setImage(UIImage(named: "heart-empty"), for: .normal)
+                }, completion: {
+                    done in
+                    if done {
+                        UIView.animate(withDuration: 0.5, animations: {
+                            Sender.transform = CGAffineTransform.identity
+                        })
+                        
+                    }
+                })
             }
             else{
                 VModel.Clicked(Character: Sender.Character)
                 
                 UIView.animate(withDuration: 0.5, animations: {
-                                Sender.transform = CGAffineTransform(scaleX: 2, y: 2)
-                                Sender.setImage(UIImage(named: "heart-red"), for: .normal)
-                            }, completion: {
-                                done in
-                                if done {
-                                    UIView.animate(withDuration: 0.5, animations: {
-                                        Sender.transform = CGAffineTransform.identity
-                                    })
-                
-                                }
-                            })
+                    Sender.transform = CGAffineTransform(scaleX: 2, y: 2)
+                    Sender.setImage(UIImage(named: "heart-red"), for: .normal)
+                }, completion: {
+                    done in
+                    if done {
+                        UIView.animate(withDuration: 0.5, animations: {
+                            Sender.transform = CGAffineTransform.identity
+                        })
+                        
+                    }
+                })
                 
             }
             
@@ -135,28 +117,30 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             VModel.Clicked(Character: Sender.Character)
             
             UIView.animate(withDuration: 0.5, animations: {
-                            Sender.transform = CGAffineTransform(scaleX: 2, y: 2)
-                            Sender.setImage(UIImage(named: "heart-red"), for: .normal)
-                        }, completion: {
-                            done in
-                            if done {
-                                UIView.animate(withDuration: 0.5, animations: {
-                                    Sender.transform = CGAffineTransform.identity
-                                })
-            
-                            }
-                        })
+                Sender.transform = CGAffineTransform(scaleX: 2, y: 2)
+                Sender.setImage(UIImage(named: "heart-red"), for: .normal)
+            }, completion: {
+                done in
+                if done {
+                    UIView.animate(withDuration: 0.5, animations: {
+                        Sender.transform = CGAffineTransform.identity
+                    })
+                    
+                }
+            })
         }
     }
- 
+    
 }
 // MARK: - After going back to DetailsVController updating the table and FavAray in VModel with using protocol
-extension ViewController:GoingBackFromDetail{
+extension ViewController:GoingBackFromDetail,UpdateTableView{
+    func ReloadTableView() {
+        self.TableView.reloadData()
+    }
+    
     func UpdateTable() {
         self.VModel.FavArray.removeAll()
-        self.VModel.ApiCall {[self] in
-            self.TableView.reloadData()
-        }
+        self.VModel.ApiCall()
         
     }
     

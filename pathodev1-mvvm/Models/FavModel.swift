@@ -8,7 +8,7 @@
 import Foundation
 
 struct Favourites:Equatable{
-
+    
     var Character:String? = nil
 }
 
