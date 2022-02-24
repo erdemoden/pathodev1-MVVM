@@ -7,3 +7,9 @@ Bu uygualamada http://hp-api.herokuapp.com/api/characters sitesinden aldığım�
 
 # -1-
 
+![](uygulama1.png)
+
+
+# -2-
+
+![](uygulama2.png)
